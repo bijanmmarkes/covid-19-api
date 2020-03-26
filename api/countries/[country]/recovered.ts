@@ -7,16 +7,19 @@ import {
   matchCountryCode,
   getIso3Code
 } from "../../../util/data";
-import { endpoints } from "../../../util/endpoints";
+import { getEndpoint } from "../../../util/endpoints";
 import { queryRecovered } from "../../../util/query";
 import { getCountryName } from "../../../util/countries";
 
 export default async (req: NowRequest, response: NowResponse) => {
   try {
+    const country = getCountryName(req.query.country as string);
     response.json(
       (
         await fetchFeatures(
-          endpoints.cases,
+          getEndpoint(
+            country === "US" ? (req.query.level as string) : "county"
+          ),
           queryRecovered(getCountryName(req.query.country as string))
         )
       )
